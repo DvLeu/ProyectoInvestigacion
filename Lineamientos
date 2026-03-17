@@ -1,0 +1,6 @@
+Sistema de gestion de entrada y salida por medio de tarjetas NFC, en un solo salon como medio de prueba
+Requisitos : 
+Flujo 
+El usuario introduce a determinada hora de entrada su tarjeta se hace un registro, -> se guarda en una BD SQL, se consultara a prior en un Excel reporte diario. 
+
+
