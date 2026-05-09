@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Control de Asistencia NFC</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 28px; margin-bottom: 4px; }
+  .subtitle { color: #94a3b8; margin-bottom: 24px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 16px;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  input, button {
+    font-family: inherit;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #475569;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    background: #0f172a;
+    color: #e2e8f0;
+    margin-bottom: 12px;
+  }
+  input:focus { outline: none; border-color: #3b82f6; }
+  button {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+  }
+  button:hover { background: #2563eb; }
+  button:disabled { background: #475569; cursor: not-allowed; }
+
+  .resultado {
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  .resultado.ok { background: #064e3b; color: #6ee7b7; }
+  .resultado.error { background: #7f1d1d; color: #fca5a5; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #334155;
+  }
+  th { color: #94a3b8; font-weight: 600; font-size: 12px; text-transform: uppercase; }
+  td { color: #cbd5e1; }
+  tr:last-child td { border: none; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge.entrada { background: #064e3b; color: #6ee7b7; }
+  .badge.salida { background: #7c2d12; color: #fdba74; }
+
+  .status {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+    margin-right: 6px;
+  }
+  .status.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
+  .status.offline { background: #ef4444; }
+
+  .empty { text-align: center; color: #64748b; padding: 30px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎓 Control de Asistencia NFC</h1>
+  <p class="subtitle">
+    <span class="status" id="apiStatus"></span>
+    <span id="apiStatusText">Conectando...</span>
+  </p>
+
+  <div class="grid">
+    <!-- Columna izquierda -->
+    <div>
+      <!-- Registrar acceso manual -->
+      <div class="card">
+        <h2>Registrar Acceso</h2>
+        <input id="uidInput" type="text" placeholder="UID de tarjeta (ej: B9175303)" autofocus>
+        <button onclick="registrarAcceso()">Registrar</button>
+        <div id="resultado"></div>
+      </div>
+
+      <!-- Lista de usuarios -->
+      <div class="card">
+        <h2>Usuarios Registrados</h2>
+        <div id="usuarios"></div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: registros -->
+    <div class="card">
+      <h2>
+        Últimos Accesos
+        <button style="float:right; padding: 4px 10px; font-size: 12px;" onclick="cargarRegistros()">↻ Actualizar</button>
+      </h2>
+      <div id="registros"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+
+// Verificar que la API esté viva
+async function checkAPI() {
+  try {
+    const r = await fetch(API + '/');
+    if (r.ok) {
+      document.getElementById('apiStatus').className = 'status online';
+      document.getElementById('apiStatusText').textContent = 'API conectada en ' + API;
+      return true;
+    }
+  } catch (e) {}
+  document.getElementById('apiStatus').className = 'status offline';
+  document.getElementById('apiStatusText').textContent = 'API no disponible — corre: python3 app.py';
+  return false;
+}
+
+// Registrar acceso con un UID
+async function registrarAcceso() {
+  const input = document.getElementById('uidInput');
+  const uid = input.value.trim();
+  const resultado = document.getElementById('resultado');
+
+  if (!uid) {
+    resultado.className = 'resultado error';
+    resultado.textContent = 'Escribe un UID';
+    return;
+  }
+
+  try {
+    const r = await fetch(API + '/acceso', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({uid})
+    });
+    const data = await r.json();
+
+    if (data.ok) {
+      resultado.className = 'resultado ok';
+      resultado.innerHTML = `✓ <b>${data.tipo_evento}</b> registrada<br>${data.usuario} (${data.matricula})`;
+      input.value = '';
+      cargarRegistros();
+    } else {
+      resultado.className = 'resultado error';
+      resultado.textContent = '✗ ' + data.razon;
+    }
+  } catch (e) {
+    resultado.className = 'resultado error';
+    resultado.textContent = 'Error de conexión';
+  }
+  input.focus();
+}
+
+// Cargar últimos registros
+async function cargarRegistros() {
+  const div = document.getElementById('registros');
+  try {
+    const r = await fetch(API + '/registros?limit=20');
+    const data = await r.json();
+
+    if (data.length === 0) {
+      div.innerHTML = '<div class="empty">Sin registros aún. Acerca una tarjeta o usa el formulario.</div>';
+      return;
+    }
+
+    let html = '<table><thead><tr><th>Fecha/Hora</th><th>Tipo</th><th>Usuario</th><th>Matrícula</th><th>UID</th></tr></thead><tbody>';
+    for (const r of data) {
+      const fecha = new Date(r.fecha_hora).toLocaleString('es-MX');
+      const badge = r.tipo_evento === 'ENTRADA' ? 'entrada' : 'salida';
+      html += `<tr>
+        <td>${fecha}</td>
+        <td><span class="badge ${badge}">${r.tipo_evento}</span></td>
+        <td>${r.usuario || '-'}</td>
+        <td>${r.matricula || '-'}</td>
+        <td><code>${r.uid || '-'}</code></td>
+      </tr>`;
+    }
+    html += '</tbody></table>';
+    div.innerHTML = html;
+  } catch (e) {
+    div.innerHTML = '<div class="empty">No se pudo cargar</div>';
+  }
+}
+
+// Cargar usuarios
+async function cargarUsuarios() {
+  const div = document.getElementById('usuarios');
+  try {
+    const r = await fetch(API + '/usuarios');
+    const data = await r.json();
+    if (data.length === 0) {
+      div.innerHTML = '<div class="empty">Sin usuarios</div>';
+      return;
+    }
+    let html = '<table><tbody>';
+    for (const u of data) {
+      const nombre = `${u.nombre} ${u.apellido_paterno} ${u.apellido_materno || ''}`.trim();
+      html += `<tr><td>${nombre}<br><small style="color:#64748b">${u.matricula}</small></td></tr>`;
+    }
+    html += '</tbody></table>';
+    div.innerHTML = html;
+  } catch (e) {
+    div.innerHTML = '<div class="empty">Error</div>';
+  }
+}
+
+// Enter en el input registra
+document.getElementById('uidInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') registrarAcceso();
+});
+
+// Iniciar
+(async () => {
+  if (await checkAPI()) {
+    cargarRegistros();
+    cargarUsuarios();
+    setInterval(cargarRegistros, 3000);
+  }
+})();
+</script>
+</body>
+</html>
