@@ -29,7 +29,7 @@ def index():
     })
 
 
-# ---------- Usuarios ----------
+#Usuarios 
 
 @bp.route("/usuarios", methods=["GET"])
 def get_usuarios():
@@ -55,7 +55,7 @@ def post_usuarios():
     return jsonify(u.to_dict()), 201
 
 
-# ---------- Tarjetas ----------
+#Tarjetas
 
 @bp.route("/tarjetas", methods=["GET"])
 def get_tarjetas():
@@ -76,7 +76,7 @@ def post_tarjeta():
     return jsonify(t.to_dict()), 201
 
 
-# ---------- Acceso ----------
+#Acceso
 
 @bp.route("/acceso", methods=["POST"])
 def post_acceso():
@@ -87,7 +87,7 @@ def post_acceso():
     return jsonify(resultado), status
 
 
-# ---------- Registros ----------
+#Registros
 
 @bp.route("/registros", methods=["GET"])
 def get_registros():
@@ -100,7 +100,7 @@ def get_registros():
     return jsonify([r.to_dict() for r in registros])
 
 
-# ---------- Salones ----------
+#Salones
 
 @bp.route("/salones", methods=["GET"])
 def get_salones():

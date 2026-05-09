@@ -21,10 +21,7 @@ def configurar(salon_id: int, origen: str):
     SALON_ID = salon_id
     ORIGEN = origen
 
-
-# ============================================================
 #  Lógica de control de acceso
-# ============================================================
 
 def procesar_uid(uid: str) -> dict:
     """
@@ -80,9 +77,7 @@ def procesar_uid(uid: str) -> dict:
     }
 
 
-# ============================================================
 #  Lectura física del ACR122U
-# ============================================================
 
 _GET_UID_APDU = [0xFF, 0xCA, 0x00, 0x00, 0x00]
 
