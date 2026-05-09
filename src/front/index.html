@@ -1,4 +1,4 @@
-`<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -15,7 +15,7 @@
     line-height: 1.4;
   }
 
-  .container { max-width: 1100px; margin: 0 auto; }
+  .container { max-width: 1200px; margin: 0 auto; }
 
   header {
     display: flex;
@@ -27,27 +27,20 @@
   }
   header img { height: 56px; width: auto; }
   header .titulo h1 {
-    font-size: 19px;
-    font-weight: 600;
-    color: #1d4e8e;
-    margin: 0;
+    font-size: 19px; font-weight: 600;
+    color: #1d4e8e; margin: 0;
   }
   header .titulo p {
-    font-size: 13px;
-    color: #6b6b6b;
-    margin-top: 2px;
+    font-size: 13px; color: #6b6b6b; margin-top: 2px;
   }
 
   .estado {
     margin-left: auto;
-    font-size: 12px;
-    color: #6b6b6b;
-    text-align: right;
+    font-size: 12px; color: #6b6b6b; text-align: right;
   }
   .estado .dot {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: #bbb;
     margin-right: 5px;
@@ -56,109 +49,122 @@
   .estado .dot.ok { background: #2e7d32; }
   .estado .dot.fail { background: #c62828; }
 
-  .grid {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 20px;
-  }
-  @media (max-width: 800px) {
-    .grid { grid-template-columns: 1fr; }
-    header img { height: 44px; }
-  }
-
   .panel {
     background: white;
     border: 1px solid #e2e2e2;
     border-radius: 4px;
     overflow: hidden;
   }
-  .panel header {
+  .panel-header {
     background: #f4f4f4;
     border-bottom: 1px solid #e2e2e2;
-    border-top: none;
-    padding: 10px 14px;
-    margin: 0;
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #444;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .panel header .reload {
-    float: right;
-    background: none;
-    border: 1px solid #ccc;
-    padding: 1px 8px;
-    border-radius: 3px;
-    color: #666;
-    cursor: pointer;
-    font-size: 12px;
+  .panel-header .titulo-panel {
+    font-size: 14px; font-weight: 600; color: #333;
   }
-  .panel header .reload:hover { background: white; }
-  .panel .body { padding: 0; }
+  .panel-header .fecha { font-size: 12px; color: #777; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .leyenda {
+    background: #fff8e1;
+    border-bottom: 1px solid #f0e4a8;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: #6d5500;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .leyenda-item { display: flex; align-items: center; gap: 6px; }
+  .leyenda-marca {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #1b5e20;
+    font-weight: 600;
+  }
+  .leyenda-marca.no {
+    background: #f5f5f5;
+    color: #ccc;
+  }
+
+  .tabla-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
   th, td {
-    text-align: left;
-    padding: 9px 14px;
+    padding: 10px 8px;
     border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
   }
+  th:last-child, td:last-child { border-right: none; }
+  tr:last-child td { border-bottom: none; }
   th {
-    color: #666;
+    background: #f9f9f9;
+    color: #444;
     font-weight: 600;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
-    background: #fafafa;
-  }
-  td { color: #333; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafbfc; }
-
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-  }
-  .badge.entrada { background: #e8f5e9; color: #1b5e20; }
-  .badge.salida  { background: #fff3e0; color: #e65100; }
-
-  code {
-    font-family: "Menlo", Consolas, monospace;
-    font-size: 12px;
-    color: #555;
-    background: #f4f4f4;
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
-
-  .vacio {
     text-align: center;
-    color: #999;
-    padding: 28px 14px;
-    font-size: 13px;
-    font-style: italic;
+  }
+  th.alumno-h, th.matricula-h { text-align: left; }
+
+  td.alumno {
+    color: #1a1a1a;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  td.matricula {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+  }
+  td.hora-celda {
+    text-align: center;
+    width: 60px;
+    min-width: 60px;
   }
 
-  .lista-usuarios { padding: 6px 0; }
-  .usuario-item {
-    padding: 9px 14px;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 13px;
+  .marca {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #1b5e20;
+    font-weight: 600;
+    font-size: 14px;
   }
-  .usuario-item:last-child { border-bottom: none; }
-  .usuario-item .nombre { color: #333; }
-  .usuario-item .matricula {
-    display: block;
-    color: #888;
-    font-size: 11px;
-    margin-top: 2px;
-    font-family: Menlo, Consolas, monospace;
+  .marca.no {
+    background: transparent;
+    color: #ddd;
+    font-size: 18px;
   }
+
+  td.total {
+    text-align: center;
+    background: #fafafa;
+    font-weight: 600;
+    color: #1d4e8e;
+  }
+
+  th.hora-actual,
+  td.hora-actual {
+    background: #fffde7;
+  }
+  th.hora-actual { background: #fff8c5; }
 
   footer {
     margin-top: 28px;
@@ -167,6 +173,14 @@
     text-align: center;
     font-size: 11px;
     color: #999;
+  }
+
+  .vacio {
+    text-align: center;
+    color: #999;
+    padding: 28px 14px;
+    font-size: 13px;
+    font-style: italic;
   }
 </style>
 </head>
@@ -188,21 +202,19 @@
     </div>
   </header>
 
-  <div class="grid">
-
-    <div class="panel">
-      <header>Usuarios registrados</header>
-      <div class="body" id="usuarios"></div>
+  <div class="panel">
+    <div class="panel-header">
+      <span class="titulo-panel">Lista de asistencia</span>
+      <span class="fecha" id="fechaHoy"></span>
     </div>
 
-    <div class="panel">
-      <header>
-        Últimos accesos
-        <button class="reload" onclick="cargarRegistros()" title="Actualizar">↻</button>
-      </header>
-      <div class="body" id="registros"></div>
+    <div class="leyenda">
+      <span class="leyenda-item"><span class="leyenda-marca">✓</span> Asistió en esa hora</span>
+      <span class="leyenda-item"><span class="leyenda-marca no">·</span> No registrado</span>
+      <span class="leyenda-item" style="margin-left:auto;"><strong>Cómo leer:</strong> cada columna es una hora del día. Si el alumno acercó su tarjeta dentro de esa hora, aparece una palomita.</span>
     </div>
 
+    <div class="tabla-wrap" id="tabla"></div>
   </div>
 
   <footer>
@@ -214,7 +226,9 @@
 <script>
 const API = '';
 
-// Reloj de la barra superior
+const HORA_INICIO = 7;
+const HORA_FIN = 21;
+
 function tick() {
   const ahora = new Date();
   document.getElementById('reloj').textContent = ahora.toLocaleString('es-MX', {
@@ -224,14 +238,23 @@ function tick() {
 }
 setInterval(tick, 1000); tick();
 
-// Convierte el ISO que manda la API a hora local correctamente
-function fmtFecha(iso) {
-  if (!iso) return '-';
-  const d = new Date(iso);
-  return d.toLocaleString('es-MX', {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  });
+document.getElementById('fechaHoy').textContent = new Date().toLocaleDateString('es-MX', {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+});
+
+function getHoraDe(iso) {
+  if (!iso) return -1;
+  const limpio = String(iso).replace('Z', '').replace(/[+-]\d{2}:\d{2}$/, '');
+  const [, h] = limpio.split('T');
+  return parseInt((h || '00').split(':')[0], 10);
+}
+
+function esHoy(iso) {
+  if (!iso) return false;
+  const limpio = String(iso).replace('Z', '').replace(/[+-]\d{2}:\d{2}$/, '');
+  const [f] = limpio.split('T');
+  const hoy = new Date().toLocaleDateString('en-CA');
+  return f === hoy;
 }
 
 async function checkAPI() {
@@ -244,77 +267,82 @@ async function checkAPI() {
     }
   } catch (e) {}
   document.getElementById('dot').className = 'dot fail';
-  document.getElementById('estadoTxt').textContent = 'Servicio sin conexión';
+  document.getElementById('estadoTxt').textContent = 'Sin conexión';
   return false;
 }
 
-async function cargarRegistros() {
-  const div = document.getElementById('registros');
-  try {
-    const r = await fetch(API + '/registros?limit=20');
-    const data = await r.json();
+async function cargar() {
+  const tabla = document.getElementById('tabla');
 
-    if (data.length === 0) {
-      div.innerHTML = '<div class="vacio">Aún no hay registros.</div>';
+  try {
+    const [usuariosRes, registrosRes] = await Promise.all([
+      fetch(API + '/usuarios').then(r => r.json()),
+      fetch(API + '/registros?limit=500').then(r => r.json()),
+    ]);
+
+    if (usuariosRes.length === 0) {
+      tabla.innerHTML = '<div class="vacio">No hay alumnos registrados.</div>';
       return;
     }
 
-    let html = '<table><thead><tr>'
-      + '<th>Fecha y hora</th>'
-      + '<th>Tipo</th>'
-      + '<th>Usuario</th>'
-      + '<th>Matrícula</th>'
-      + '<th>UID tarjeta</th>'
-      + '</tr></thead><tbody>';
-
-    for (const reg of data) {
-      const badge = reg.tipo_evento === 'ENTRADA' ? 'entrada' : 'salida';
-      html += `<tr>
-        <td>${fmtFecha(reg.fecha_hora)}</td>
-        <td><span class="badge ${badge}">${reg.tipo_evento}</span></td>
-        <td>${reg.usuario || '-'}</td>
-        <td>${reg.matricula || '-'}</td>
-        <td><code>${reg.uid || '-'}</code></td>
-      </tr>`;
-    }
-    html += '</tbody></table>';
-    div.innerHTML = html;
-  } catch (e) {
-    div.innerHTML = '<div class="vacio">No se pudo cargar la información.</div>';
-  }
-}
-
-async function cargarUsuarios() {
-  const div = document.getElementById('usuarios');
-  try {
-    const r = await fetch(API + '/usuarios');
-    const data = await r.json();
-
-    if (data.length === 0) {
-      div.innerHTML = '<div class="vacio">Sin usuarios registrados.</div>';
-      return;
+    const horasPorMatricula = {};
+    for (const r of registrosRes) {
+      if (!esHoy(r.fecha_hora)) continue;
+      const h = getHoraDe(r.fecha_hora);
+      if (!horasPorMatricula[r.matricula]) horasPorMatricula[r.matricula] = new Set();
+      horasPorMatricula[r.matricula].add(h);
     }
 
-    let html = '<div class="lista-usuarios">';
-    for (const u of data) {
+    const horaActual = new Date().getHours();
+
+    let head = '<thead><tr>'
+      + '<th class="alumno-h">Alumno</th>'
+      + '<th class="matricula-h">Matrícula</th>';
+
+    for (let h = HORA_INICIO; h <= HORA_FIN; h++) {
+      const claseActual = h === horaActual ? ' hora-actual' : '';
+      const etiqueta = String(h).padStart(2, '0') + ':00';
+      head += `<th class="hora-h${claseActual}">${etiqueta}</th>`;
+    }
+    head += '<th>Total</th></tr></thead>';
+
+    const usuariosOrdenados = [...usuariosRes].sort((a, b) =>
+      a.apellido_paterno.localeCompare(b.apellido_paterno, 'es')
+    );
+
+    let body = '<tbody>';
+    for (const u of usuariosOrdenados) {
       const nombre = `${u.nombre} ${u.apellido_paterno} ${u.apellido_materno || ''}`.trim();
-      html += `<div class="usuario-item">
-        <span class="nombre">${nombre}</span>
-        <span class="matricula">${u.matricula}</span>
-      </div>`;
+      const horasMarcadas = horasPorMatricula[u.matricula] || new Set();
+
+      body += `<tr>
+        <td class="alumno">${nombre}</td>
+        <td class="matricula">${u.matricula}</td>`;
+
+      for (let h = HORA_INICIO; h <= HORA_FIN; h++) {
+        const claseActual = h === horaActual ? ' hora-actual' : '';
+        const tieneRegistro = horasMarcadas.has(h);
+        const marca = tieneRegistro
+          ? '<span class="marca">✓</span>'
+          : '<span class="marca no">·</span>';
+        body += `<td class="hora-celda${claseActual}">${marca}</td>`;
+      }
+
+      body += `<td class="total">${horasMarcadas.size}</td></tr>`;
     }
-    html += '</div>';
-    div.innerHTML = html;
+    body += '</tbody>';
+
+    tabla.innerHTML = '<table>' + head + body + '</table>';
+
   } catch (e) {
-    div.innerHTML = '<div class="vacio">Error al cargar.</div>';
+    tabla.innerHTML = '<div class="vacio">No se pudo cargar la información.</div>';
   }
 }
 
 (async () => {
   if (await checkAPI()) {
-    cargarRegistros();
-    cargarUsuarios();
-    setInterval(cargarRegistros, 3000);
+    cargar();
+    setInterval(cargar, 3000);
     setInterval(checkAPI, 10000);
   }
 })();

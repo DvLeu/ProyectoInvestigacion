@@ -7,12 +7,17 @@ services:
       MYSQL_ROOT_PASSWORD: tu_password
       MYSQL_DATABASE: asistencia_automation
       TZ: America/Mexico_City
-    command: --default-time-zone=-06:00
+    command: >
+      --default-time-zone=-06:00
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --skip-character-set-client-handshake
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./src/Schema/Schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./src/Schema/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptu_password"]
       interval: 5s
