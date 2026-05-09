@@ -6,6 +6,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: tu_password
       MYSQL_DATABASE: asistencia_automation
+      TZ: America/Mexico_City
+    command: --default-time-zone=-06:00
     ports:
       - "3307:3306"
     volumes:

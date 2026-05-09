@@ -3,7 +3,6 @@ Modelos SQLAlchemy.
 Cada clase mapea una tabla del Schema.sql sin modificar nada.
 """
 
-from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -18,7 +17,7 @@ class Usuario(db.Model):
     apellido_materno = db.Column(db.String(100), nullable=True)
     matricula = db.Column(db.String(30), nullable=False, unique=True)
     activo = db.Column(db.Boolean, nullable=False, default=True)
-    fecha_creacion = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    fecha_creacion = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
 
     tarjetas = db.relationship("TarjetaNFC", backref="usuario", lazy=True)
 
@@ -52,7 +51,7 @@ class TarjetaNFC(db.Model):
         nullable=False,
     )
     activa = db.Column(db.Boolean, nullable=False, default=True)
-    fecha_alta = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    fecha_alta = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
 
     def to_dict(self):
         return {
@@ -71,7 +70,7 @@ class Salon(db.Model):
     nombre = db.Column(db.String(100), nullable=False)
     ubicacion = db.Column(db.String(150), nullable=True)
     activo = db.Column(db.Boolean, nullable=False, default=True)
-    fecha_creacion = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    fecha_creacion = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
 
     def to_dict(self):
         return {
@@ -101,7 +100,7 @@ class RegistroAcceso(db.Model):
         db.ForeignKey("salones.id_salon", onupdate="CASCADE", ondelete="RESTRICT"),
         nullable=False,
     )
-    fecha_hora = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    fecha_hora = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     tipo_evento = db.Column(db.Enum("ENTRADA", "SALIDA"), nullable=False)
     origen = db.Column(db.String(50), nullable=True)
     observacion = db.Column(db.String(255), nullable=True)
