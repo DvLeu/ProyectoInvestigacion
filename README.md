@@ -13,9 +13,8 @@ Sistema de control de asistencia escolar con lector NFC. Cuando un alumno acerca
 * [Características](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#caracter%C3%ADsticas)
 * [Estructura del proyecto](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#estructura-del-proyecto)
 * [Requisitos](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#requisitos)
-* [Instalación](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#instalaci%C3%B3n)
+* [Instalación y Ejecución en macOS](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#instalaci%C3%B3n-y-ejecuci%C3%B3n-en-macos)
 * [Configuración del lector NFC](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#configuraci%C3%B3n-del-lector-nfc)
-* [Ejecución](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#ejecuci%C3%B3n)
 * [Endpoints de la API](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#endpoints-de-la-api)
 * [Esquema de base de datos](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#esquema-de-base-de-datos)
 * [Solución de problemas](https://claude.ai/chat/0de1e54d-0f41-4a3e-ac66-2ce0f64df579#soluci%C3%B3n-de-problemas)
@@ -59,24 +58,24 @@ ProyectoInvestigacion/
 
 ## Requisitos
 
-* Linux (probado en Debian 13)
+* macOS 11+
 * Python 3.10+
 * Docker y Docker Compose
-* Lector NFC ACS ACR122U
+* Lector NFC ACS ACR122U (opcional, para el sistema completo)
 * Tarjetas NFC compatibles (MIFARE Classic, NTAG, ISO 14443)
 
 ---
 
-## Instalación
+## Instalación y Ejecución en macOS
 
-### 1. Clonar el repositorio
+### Paso 1: Clonar el repositorio
 
 ```bash
-git clone https://github.com/DvLeu/ProyectoInvestigacion.git
+git clone git@github.com:DvLeu/ProyectoInvestigacion.git
 cd ProyectoInvestigacion
 ```
 
-### 2. Levantar la base de datos
+### Paso 2: Levantar la base de datos con Docker
 
 ```bash
 docker compose up -d
@@ -84,83 +83,51 @@ docker compose up -d
 
 Esto crea automáticamente:
 
-* **MySQL 8.0** en `localhost:3307` con la BD `asistencia_automation` y el schema aplicado
+* **MySQL 8.0** en `localhost:3307` con la BD `asistencia_automation`
 * **phpMyAdmin** en `http://localhost:8080` (usuario: `root`, password: `tu_password`)
 
-> Nota: Si el puerto 3306 está ocupado por otro MySQL, el `docker-compose.yml` usa el 3307 para evitar conflictos.
-
-### 3. Instalar dependencias del sistema (para el lector NFC)
-
-```bash
-sudo apt update
-sudo apt install pcscd pcsc-tools libccid libpcsclite-dev swig build-essential
-sudo systemctl enable --now pcscd
-```
-
-### 4. Crear entorno Python e instalar dependencias
+### Paso 3: Crear entorno virtual Python
 
 ```bash
 python3 -m venv .Venv
 source .Venv/bin/activate
+```
+
+### Paso 4: Instalar dependencias
+
+```bash
 cd src/app
 pip install -r requirements.txt
 ```
 
-### 5. Configurar la conexión a MySQL
+### Paso 5: Ejecutar la aplicación
 
-Edita `src/app/config.py` y reemplaza `tu_password` por el password real:
-
-```python
-SQLALCHEMY_DATABASE_URI = (
-    "mysql+pymysql://root:tu_password@localhost:3307/asistencia_automation"
-)
+```bash
+python3 app.py todo
 ```
 
-### 6. Cargar datos iniciales
-
-Abre [phpMyAdmin](http://localhost:8080/) y ejecuta:
-
-```sql
-USE asistencia_automation;
-
-INSERT INTO salones (nombre, ubicacion)
-VALUES ('Salón A-101', 'Edificio Principal');
-
-INSERT INTO usuarios (nombre, apellido_paterno, apellido_materno, matricula)
-VALUES ('David', 'TuApellido', 'TuApellido2', 'A2024001');
-
--- Reemplaza B9175303 por el UID real de tu tarjeta
-INSERT INTO tarjetas_nfc (uid, id_usuario)
-VALUES ('B9175303', 1);
-```
+Luego abre en el navegador: **http://localhost:5000/web**
 
 ---
 
-## Configuración del lector NFC
+## Configuración del lector NFC (macOS)
 
-El driver `pn533_usb` del kernel de Linux suele ocupar el ACR122U y bloquea el acceso de la aplicación. Hay que liberarlo:
-
-```bash
-# Bloqueo permanente (sobrevive a reinicios)
-echo -e "blacklist pn533_usb\nblacklist pn533\nblacklist nfc" \
-  | sudo tee /etc/modprobe.d/blacklist-nfc.conf
-
-# Descargar los módulos ahora mismo
-sudo rmmod pn533_usb 2>/dev/null
-sudo rmmod pn533 2>/dev/null
-sudo rmmod nfc 2>/dev/null
-
-# Reiniciar pcscd
-sudo systemctl restart pcscd
-```
-
-### Verificar que el lector funcione
+El soporte para lectores NFC en macOS requiere bibliotecas específicas:
 
 ```bash
-pcsc_scan
+# Instalar dependencias si aún no las tienes
+brew install pcsc-lite swig
+
+# Verificar que el lector está conectado
+system_profiler SPUSBDataType | grep -i "ACR"
 ```
 
-Debe mostrar `Reader 0: ACS ACR122U PICC Interface 00 00`. Acerca una tarjeta y verás el ATR. Sal con `Ctrl+C`.
+El driver se detecta automáticamente. Si tienes problemas, reinicia:
+
+```bash
+# Reiniciar el servicio de tarjetas inteligentes
+sudo killall -9 pcscd
+```
 
 ### Obtener el UID de una tarjeta
 
@@ -177,34 +144,6 @@ print('UID:', toHexString(data).replace(' ', ''))
 ```
 
 Acerca la tarjeta antes de presionar Enter. Te imprime su UID único.
-
----
-
-## Ejecución
-
-### Modo completo (recomendado)
-
-Arranca API + lector NFC + interfaz web en una sola terminal:
-
-```bash
-source .Venv/bin/activate
-cd src/app
-python3 app.py
-```
-
-Abrir en el navegador: **http://localhost:5000/web**
-
-Acerca una tarjeta al lector y verás el registro aparecer automáticamente en la tabla.
-
-### Modo simulador (sin lector físico)
-
-Útil para desarrollo o pruebas sin hardware:
-
-```bash
-python3 app.py simulador
-```
-
-Escribe UIDs a mano y se registran como si vinieran del lector real.
 
 ---
 
