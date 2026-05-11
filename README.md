@@ -305,4 +305,3 @@ docker exec -it nfc_mysql mysql -uroot -ptu_password asistencia_automation
 Proyecto de investigación
 
 * David León Salas
-* Issac Benitez
