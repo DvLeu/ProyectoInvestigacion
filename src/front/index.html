@@ -2,261 +2,340 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Control de Asistencia</title>
+<title>Pase de Lista — Literacidad Digital NRC 54487</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: -apple-system, "Segoe UI", Tahoma, sans-serif;
-    background: #fafafa;
+    background: #f0f2f8;
     color: #2c2c2c;
-    padding: 24px;
+    padding: 16px;
     min-height: 100vh;
     line-height: 1.4;
   }
 
-  .container { max-width: 1200px; margin: 0 auto; }
-
+  /* ── HEADER ── */
   header {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding-bottom: 16px;
-    margin-bottom: 24px;
+    gap: 14px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
     border-bottom: 2px solid #1d4e8e;
-  }
-  header img { height: 56px; width: auto; }
-  header .titulo h1 {
-    font-size: 19px; font-weight: 600;
-    color: #1d4e8e; margin: 0;
-  }
-  header .titulo p {
-    font-size: 13px; color: #6b6b6b; margin-top: 2px;
-  }
-
-  .estado {
-    margin-left: auto;
-    font-size: 12px; color: #6b6b6b; text-align: right;
-  }
-  .estado .dot {
-    display: inline-block;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #bbb;
-    margin-right: 5px;
-    vertical-align: middle;
-  }
-  .estado .dot.ok { background: #2e7d32; }
-  .estado .dot.fail { background: #c62828; }
-
-  .panel {
-    background: white;
-    border: 1px solid #e2e2e2;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .panel-header {
-    background: #f4f4f4;
-    border-bottom: 1px solid #e2e2e2;
+    background: #fff;
     padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    border-radius: 6px;
+    border: 1px solid #dde3ef;
+    margin-bottom: 12px;
   }
-  .panel-header .titulo-panel {
-    font-size: 14px; font-weight: 600; color: #333;
+  header img { height: 52px; width: auto; flex-shrink: 0; }
+  header .titulo h1 { font-size: 16px; font-weight: 700; color: #1d4e8e; }
+  header .titulo p  { font-size: 11px; color: #6b6b6b; margin-top: 2px; }
+  .estado { margin-left: auto; font-size: 11px; color: #6b6b6b; text-align: right; white-space: nowrap; }
+  .dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: #bbb;
+    margin-right: 4px; vertical-align: middle;
   }
-  .panel-header .fecha { font-size: 12px; color: #777; }
+  .dot.ok { background: #2e7d32; }
+  .dot.fail { background: #c62828; }
 
+  /* ── INFO CLASE ── */
+  .info-clase {
+    display: flex; flex-wrap: wrap;
+    background: #fff; border: 1px solid #dde3ef; border-radius: 6px;
+    overflow: hidden; margin-bottom: 12px;
+  }
+  .info-item {
+    display: flex; flex-direction: column;
+    padding: 8px 16px; border-right: 1px solid #dde3ef; flex: 1; min-width: 100px;
+  }
+  .info-item:last-child { border-right: none; }
+  .info-label { font-size: 9px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .info-val   { font-size: 12px; font-weight: 700; color: #1d4e8e; }
+
+  /* ── PANEL ── */
+  .panel { background: #fff; border: 1px solid #dde3ef; border-radius: 6px; overflow: hidden; }
+  .panel-header {
+    background: #f4f6fb; border-bottom: 1px solid #dde3ef;
+    padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .titulo-panel { font-size: 13px; font-weight: 700; color: #1d4e8e; }
+  .acciones { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: none; border-radius: 4px;
+    padding: 6px 12px; font-size: 11px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.2px; text-decoration: none;
+  }
+  .btn-primary { background: #1d4e8e; color: #fff; }
+  .btn-primary:hover { background: #163f76; }
+
+  /* ── LEYENDA ── */
   .leyenda {
-    background: #fff8e1;
-    border-bottom: 1px solid #f0e4a8;
-    padding: 8px 16px;
-    font-size: 12px;
-    color: #6d5500;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    background: #fffcf0; border-bottom: 1px solid #f0e8c0;
+    padding: 7px 14px; font-size: 11px; color: #5a4a00;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
   }
-  .leyenda-item { display: flex; align-items: center; gap: 6px; }
-  .leyenda-marca {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: #e8f5e9;
-    color: #1b5e20;
-    font-weight: 600;
+  .leyenda-item { display: flex; align-items: center; gap: 5px; }
+  .ldot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%;
+    font-weight: 700; font-size: 11px;
   }
-  .leyenda-marca.no {
-    background: #f5f5f5;
-    color: #ccc;
-  }
+  .ldot-p { background: #c6efce; color: #1b5e20; }
+  .ldot-t { background: #ffeb9c; color: #bf360c; }
+  .ldot-a { background: #f0f0f0; color: #bbb; }
 
-  .tabla-wrap { overflow-x: auto; }
+  /* ── RESUMEN ── */
+  .resumen {
+    padding: 6px 14px; background: #f8f9fd; border-bottom: 1px solid #dde3ef;
+    font-size: 11px; color: #555; display: flex; gap: 18px; flex-wrap: wrap;
+  }
+  .resumen strong { color: #1d4e8e; }
+
+  /* ── TABLA SEMESTRAL ── */
+  .tabla-wrap { overflow: auto; max-height: 72vh; position: relative; }
+
   table {
-    width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 11px;
+    table-layout: fixed;
+    white-space: nowrap;
   }
-  th, td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #f0f0f0;
-    border-right: 1px solid #f0f0f0;
-  }
-  th:last-child, td:last-child { border-right: none; }
-  tr:last-child td { border-bottom: none; }
+
+  /* ── Sticky: columnas info (izquierda) ── */
+  .s0 { position: sticky; left: 0;     z-index: 2; background: inherit; }
+  .s1 { position: sticky; left: 30px;  z-index: 2; background: inherit; }
+  .s2 { position: sticky; left: 132px; z-index: 2; background: inherit; }  /* 30+102 */
+  .s3 { position: sticky; left: 352px; z-index: 2; background: inherit; }  /* 30+102+220 */
+
+  /* ── Sticky: filas header (arriba) ── */
+  thead tr:nth-child(1) th { position: sticky; top: 0;    z-index: 3; }
+  thead tr:nth-child(2) th { position: sticky; top: 22px; z-index: 3; }
+
+  /* Header sticky + left: mayor z-index (importante para ganar la regla más específica) */
+  thead th.s0, thead th.s1, thead th.s2, thead th.s3 { z-index: 6 !important; }
+
+  /* ── Estilos cabecera ── */
   th {
-    background: #f9f9f9;
-    color: #444;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    background: #f8f9fd; color: #444;
+    border: 1px solid #e0e4f0;
+    padding: 0 3px; text-align: center;
+    font-weight: 700;
+  }
+  th.th-mes {
+    background: #dce8f5; color: #1d4e8e;
+    font-size: 9px; font-weight: 700;
+    border-bottom: 1px solid #b8cfe8;
+    height: 22px; line-height: 22px;
+  }
+  th.th-mes-info {
+    background: #f0f2fa; color: #999;
+    font-size: 8px;
+    height: 22px;
+  }
+  th.th-dia {
+    background: #1d4e8e; color: #fff;
+    font-size: 9px; font-weight: 700;
+    height: 30px; line-height: 1.2;
+    min-width: 32px; width: 32px;
     text-align: center;
+    border-color: #2a5fa8;
+    padding: 2px 1px;
   }
-  th.alumno-h, th.matricula-h { text-align: left; }
+  th.th-info {
+    background: #1d4e8e; color: #fff;
+    font-size: 9px; font-weight: 700;
+    height: 30px; text-align: center;
+  }
+  th.th-total {
+    background: #163f76; color: #fff;
+    font-size: 8px; font-weight: 700;
+    height: 30px; min-width: 46px; width: 46px;
+    border-color: #1a3a6b;
+  }
 
-  td.alumno {
-    color: #1a1a1a;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  td.matricula {
-    font-family: Menlo, Consolas, monospace;
-    font-size: 12px;
-    color: #666;
-    white-space: nowrap;
-  }
-  td.hora-celda {
+  /* ── Widths columnas info ── */
+  th.c-no,  td.c-no  { width: 30px;  min-width: 30px; }
+  th.c-mat, td.c-mat { width: 102px; min-width: 102px; }
+  th.c-nom, td.c-nom { width: 220px; min-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+  th.c-car, td.c-car { width: 46px;  min-width: 46px; }
+
+  /* ── Celdas datos ── */
+  td {
+    border: 1px solid #eaecf4;
+    padding: 0;
     text-align: center;
-    width: 60px;
-    min-width: 60px;
+    height: 22px;
+    font-size: 10px;
   }
+  td.c-no  { color: #bbb; font-size: 9px; text-align: center; }
+  td.c-mat { font-family: Menlo, Consolas, monospace; font-size: 9px; color: #666; padding: 0 4px; text-align: left; }
+  td.c-nom { color: #1a1a1a; font-weight: 500; padding: 0 5px; text-align: left; font-size: 10px; }
+  td.c-car { color: #888; font-size: 9px; }
+  td.c-total { color: #1d4e8e; font-weight: 700; font-size: 10px; background: #f4f6fb; width: 46px; min-width: 46px; }
 
-  .marca {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: #e8f5e9;
-    color: #1b5e20;
-    font-weight: 600;
-    font-size: 14px;
-  }
-  .marca.no {
-    background: transparent;
-    color: #ddd;
-    font-size: 18px;
-  }
+  /* ── Celdas de fecha ── */
+  td.dc { width: 32px; min-width: 32px; }
+  td.p  { background: #c6efce; color: #1b5e20; font-weight: 700; font-size: 11px; }
+  td.t  { background: #ffeb9c; color: #bf360c; font-weight: 700; font-size: 10px; }
 
-  td.total {
-    text-align: center;
-    background: #fafafa;
-    font-weight: 600;
-    color: #1d4e8e;
-  }
+  /* Filas alternas */
+  tr:nth-child(even) td { background-color: #f9fafe; }
+  tr:nth-child(even) td.p { background: #b8e8c0; }
+  tr:nth-child(even) td.t { background: #f5e090; }
+  tr:nth-child(even) td.c-total { background: #eef0fc; }
 
-  th.hora-actual,
-  td.hora-actual {
-    background: #fffde7;
-  }
-  th.hora-actual { background: #fff8c5; }
+  /* Fila de hoy resaltada */
+  th.hoy { background: #fff3cd !important; color: #664d03 !important; }
+  td.hoy { background: #fffde7 !important; }
+  td.hoy.p { background: #b6efb6 !important; }
+  td.hoy.t { background: #ffe08a !important; }
 
+  /* ── FOOTER ── */
   footer {
-    margin-top: 28px;
-    padding-top: 14px;
-    border-top: 1px solid #e2e2e2;
-    text-align: center;
-    font-size: 11px;
-    color: #999;
+    margin-top: 12px; text-align: center;
+    font-size: 10px; color: #aaa;
   }
 
-  .vacio {
-    text-align: center;
-    color: #999;
-    padding: 28px 14px;
-    font-size: 13px;
-    font-style: italic;
-  }
+  .vacio { text-align: center; color: #aaa; padding: 24px; font-style: italic; font-size: 12px; }
 </style>
 </head>
 <body>
 
-<div class="container">
-
-  <header>
-    <img src="/web/assets/logo-uv.jpg" alt="Universidad Veracruzana">
-    <div class="titulo">
-      <h1>Control de Asistencia</h1>
-      <p>Sistema de registro por tarjetas NFC</p>
-    </div>
-    <div class="estado">
-      <span class="dot" id="dot"></span>
-      <span id="estadoTxt">Conectando...</span>
-      <br>
-      <span id="reloj"></span>
-    </div>
-  </header>
-
-  <div class="panel">
-    <div class="panel-header">
-      <span class="titulo-panel">Lista de asistencia</span>
-      <span class="fecha" id="fechaHoy"></span>
-    </div>
-
-    <div class="leyenda">
-      <span class="leyenda-item"><span class="leyenda-marca">✓</span> Asistió en esa hora</span>
-      <span class="leyenda-item"><span class="leyenda-marca no">·</span> No registrado</span>
-      <span class="leyenda-item" style="margin-left:auto;"><strong>Cómo leer:</strong> cada columna es una hora del día. Si el alumno acercó su tarjeta dentro de esa hora, aparece una palomita.</span>
-    </div>
-
-    <div class="tabla-wrap" id="tabla"></div>
+<header>
+  <img src="assets/logo-uv.jpg" alt="Universidad Veracruzana">
+  <div class="titulo">
+    <h1>Pase de Lista &mdash; Literacidad Digital</h1>
+    <p>Sistema de registro por tarjetas NFC &mdash; NRC 54487 &mdash; Lunes a Jueves 8:00–9:00</p>
   </div>
+  <div class="estado">
+    <span class="dot" id="dot"></span>
+    <span id="estadoTxt">Conectando...</span><br>
+    <span id="reloj"></span>
+  </div>
+</header>
 
-  <footer>
-    Universidad Veracruzana &mdash; Proyecto de Investigación
-  </footer>
-
+<div class="info-clase">
+  <div class="info-item"><span class="info-label">Materia</span><span class="info-val">LITERACIDAD DIGITAL</span></div>
+  <div class="info-item"><span class="info-label">NRC</span><span class="info-val">54487</span></div>
+  <div class="info-item"><span class="info-label">Nivel</span><span class="info-val">LC</span></div>
+  <div class="info-item"><span class="info-label">Campus</span><span class="info-val">Veracruz</span></div>
+  <div class="info-item"><span class="info-label">Período</span><span class="info-val">Feb &ndash; Jul 2026</span></div>
+  <div class="info-item"><span class="info-label">Fecha</span><span class="info-val" id="fechaHoy"></span></div>
+  <div class="info-item"><span class="info-label">Alumnos</span><span class="info-val">36</span></div>
 </div>
 
+<div class="panel">
+  <div class="panel-header">
+    <span class="titulo-panel">Lista de Asistencia &mdash; Semestre completo</span>
+    <div class="acciones">
+      <a id="linkDescargar" href="#" class="btn btn-primary">&#11015;&nbsp;Descargar Excel</a>
+    </div>
+  </div>
+
+  <div class="leyenda">
+    <span class="leyenda-item"><span class="ldot ldot-p">&#10003;</span> Puntual (8:00–8:15)</span>
+    <span class="leyenda-item"><span class="ldot ldot-t">T</span> Tardanza (8:16–8:59)</span>
+    <span class="leyenda-item"><span class="ldot ldot-a">&middot;</span> Ausente / Sin tarjeta</span>
+    <span style="margin-left:auto;font-size:10px;color:#888;">Columnas con fondo amarillo = hoy</span>
+  </div>
+
+  <div class="resumen" id="resumen"><span>Cargando...</span></div>
+
+  <div class="tabla-wrap">
+    <div id="tablaContenedor"><div class="vacio">Cargando información del semestre...</div></div>
+  </div>
+</div>
+
+<footer>
+  Universidad Veracruzana &mdash; Proyecto de Investigación &mdash; NRC 54487
+</footer>
+
 <script>
-const API = '';
+/* ─── Lista completa de alumnos (Excel: ListaAsistencia_NRC_54487) ─── */
+const ALUMNOS = [
+  { no:  1, matricula: 'S25007986', nombre: 'AGUILAR SANTOS NAYELI ALEXANDRA',    carrera: 'ADMT' },
+  { no:  2, matricula: 'S24007697', nombre: 'BOLAÑOS AVILA RODRIGO',               carrera: 'ADMI' },
+  { no:  3, matricula: 'S25008065', nombre: 'CASTILLO LOPEZ KARELY ALEXIA',        carrera: 'ADMT' },
+  { no:  4, matricula: 'S25008051', nombre: 'CASTRO COELLO DANA MICHELLE',         carrera: 'ADMT' },
+  { no:  5, matricula: 'S25008011', nombre: 'CUELLAR OCHOA ARTURO',                carrera: 'ADMT' },
+  { no:  6, matricula: 'S25008003', nombre: 'DELFIN YEPEZ MADELINE',               carrera: 'ADMT' },
+  { no:  7, matricula: 'S25026917', nombre: 'DOMINGUEZ MARIN EVELIN',              carrera: 'ADMT' },
+  { no:  8, matricula: 'S25008053', nombre: 'FILIDOR CRUZ KITZIA MARGARITA',       carrera: 'ADMT' },
+  { no:  9, matricula: 'S25008106', nombre: 'GARCIA MARES JORGE',                  carrera: 'ADMT' },
+  { no: 10, matricula: 'S25008076', nombre: 'GAYOSSO ROBLES DANIELA',              carrera: 'ADMT' },
+  { no: 11, matricula: 'S25007999', nombre: 'GOMEZ DIAZ DANIELA',                  carrera: 'ADMT' },
+  { no: 12, matricula: 'S24007778', nombre: 'GONZALEZ ECHEVERRIA ALEXANDRA',       carrera: 'ADMT' },
+  { no: 13, matricula: 'S25008047', nombre: 'GUERRA PAVON NATALIA',                carrera: 'ADMT' },
+  { no: 14, matricula: 'S25008101', nombre: 'HERNANDEZ LOYO ANGEL ADRIAN',         carrera: 'ADMT' },
+  { no: 15, matricula: 'S24007520', nombre: 'JACOME LARA JOSE LUIS',               carrera: 'ADMI' },
+  { no: 16, matricula: 'S25008074', nombre: 'LAZARO GARCIA YAMILETH ALEJANDRA',    carrera: 'ADMT' },
+  { no: 17, matricula: 'S24007796', nombre: 'LLAVE HERNANDEZ HIROMI',              carrera: 'ADMT' },
+  { no: 18, matricula: 'S25026935', nombre: 'LOZANO RAMOS HIROMI GUADALUPE',       carrera: 'ADMT' },
+  { no: 19, matricula: 'S25008054', nombre: 'MARTINEZ PACHECO ROSARIO',            carrera: 'ADMT' },
+  { no: 20, matricula: 'S25026940', nombre: 'MARTINEZ TELLEZ EDNA MAYRAM',         carrera: 'ADMT' },
+  { no: 21, matricula: 'S25008049', nombre: 'MENDEZ MONTERO JAVER',                carrera: 'ADMT' },
+  { no: 22, matricula: 'S25026941', nombre: 'MOLINA HEREDIA LUNA DENISSE',         carrera: 'ADMT' },
+  { no: 23, matricula: 'S25008102', nombre: 'MORA GODOY FERNANDA',                 carrera: 'ADMT' },
+  { no: 24, matricula: 'S25026918', nombre: 'MORALES MENDEZ MONICA',               carrera: 'ADMT' },
+  { no: 25, matricula: 'S25026946', nombre: 'PERAFAN CORTES ANDREA',               carrera: 'ADMT' },
+  { no: 26, matricula: 'S25008067', nombre: 'PINEDA OROZCO MELANIE GISELLE',       carrera: 'ADMT' },
+  { no: 27, matricula: 'S25008082', nombre: 'PLATAS MALPICA MELANY LIZET',         carrera: 'ADMT' },
+  { no: 28, matricula: 'S25026920', nombre: 'PONCE MINGUEZ MICHELLE STEFANY',      carrera: 'ADMT' },
+  { no: 29, matricula: 'S25008039', nombre: 'PREZA HERRERA DANA KAREN',            carrera: 'ADMT' },
+  { no: 30, matricula: 'S25008100', nombre: 'REYES CARRERA ALICIA ALEXANDRA',      carrera: 'ADMT' },
+  { no: 31, matricula: 'S25008002', nombre: 'RIVES PEREZ ANDREA AYELEN',           carrera: 'ADMT' },
+  { no: 32, matricula: 'S25008027', nombre: 'SALAZAR AGUILAR ANA MARIA',           carrera: 'ADMT' },
+  { no: 33, matricula: 'S25026921', nombre: 'SANZ DOMINGUEZ EDSON EMMANUEL',       carrera: 'ADMT' },
+  { no: 34, matricula: 'S25026944', nombre: 'TELLEZ BOLAÑOS JOSELYN',              carrera: 'ADMT' },
+  { no: 35, matricula: 'S25007985', nombre: 'TRONCO REYES YOSELIN',                carrera: 'ADMT' },
+  { no: 36, matricula: 'S24007535', nombre: 'VAZQUEZ USCANGA PAULINA',             carrera: 'ADMI' },
+];
 
-const HORA_INICIO = 7;
-const HORA_FIN = 21;
+const MESES  = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const DIAS   = ['', 'L', 'M', 'X', 'J'];  // índice 1=Lun … 4=Jue
 
+/* ─── URL base de la API Flask ───────────────────────────────────────────
+   Siempre apunta al servidor Flask (5000), sin importar desde qué puerto
+   se sirve el HTML (Live Server, Flask /web, etc.)                       */
+const API = 'http://127.0.0.1:5000';
+
+/* ─── Reloj ─── */
 function tick() {
-  const ahora = new Date();
-  document.getElementById('reloj').textContent = ahora.toLocaleString('es-MX', {
+  document.getElementById('reloj').textContent = new Date().toLocaleString('es-MX', {
     weekday: 'short', day: '2-digit', month: 'short',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
   });
 }
 setInterval(tick, 1000); tick();
-
 document.getElementById('fechaHoy').textContent = new Date().toLocaleDateString('es-MX', {
-  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
 });
 
-function getHoraDe(iso) {
-  if (!iso) return -1;
-  const limpio = String(iso).replace('Z', '').replace(/[+-]\d{2}:\d{2}$/, '');
-  const [, h] = limpio.split('T');
-  return parseInt((h || '00').split(':')[0], 10);
+/* ─── Generador de fechas clase (Lun–Jue, Feb 2 – Jun 30 2026) ─── */
+function generarFechasClase() {
+  const fechas = [];
+  const fin    = new Date(2026, 5, 30);  // 30 jun 2026
+  const d      = new Date(2026, 1, 2);   // 2 feb 2026 (month 0-indexed)
+  while (d <= fin) {
+    const dow = d.getDay();
+    if (dow >= 1 && dow <= 4) fechas.push(new Date(d));
+    d.setDate(d.getDate() + 1);
+  }
+  return fechas;
 }
+const FECHAS = generarFechasClase();   // 86 sesiones
 
-function esHoy(iso) {
-  if (!iso) return false;
-  const limpio = String(iso).replace('Z', '').replace(/[+-]\d{2}:\d{2}$/, '');
-  const [f] = limpio.split('T');
-  const hoy = new Date().toLocaleDateString('en-CA');
-  return f === hoy;
+function isoFecha(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
+const HOY_ISO = isoFecha(new Date());
 
+/* ─── API ─── */
 async function checkAPI() {
   try {
     const r = await fetch(API + '/');
@@ -265,85 +344,153 @@ async function checkAPI() {
       document.getElementById('estadoTxt').textContent = 'Servicio activo';
       return true;
     }
-  } catch (e) {}
+  } catch (_) {}
   document.getElementById('dot').className = 'dot fail';
   document.getElementById('estadoTxt').textContent = 'Sin conexión';
   return false;
 }
 
-async function cargar() {
-  const tabla = document.getElementById('tabla');
+/* ─── Construir tabla ─── */
+function buildTabla(lookup, usuarios) {
+  /* lookup: "idUsuario-YYYY-MM-DD" → 'p' | 't'
+     Primeras N filas: usuarios reales del DB (tienen tarjeta NFC)
+     Resto: alumnos del Excel sin tarjeta (a partir del índice usuarios.length) */
+  const filas = [];
+  for (const u of usuarios) {
+    const nombre = [u.nombre, u.apellido_paterno, u.apellido_materno]
+      .filter(Boolean).join(' ').toUpperCase();
+    filas.push({ no: filas.length + 1, matricula: u.matricula, nombre, carrera: '—', dbUser: u });
+  }
+  for (let i = usuarios.length; i < ALUMNOS.length; i++) {
+    filas.push({ ...ALUMNOS[i], no: filas.length + 1, dbUser: null });
+  }
 
+  /* ── Encabezado mes (row 1) ── */
+  let r1 = '<tr>';
+  r1 += '<th class="th-mes-info s0 c-no" rowspan="1"></th>';
+  r1 += '<th class="th-mes-info s1 c-mat" rowspan="1"></th>';
+  r1 += '<th class="th-mes-info s2 c-nom" rowspan="1"></th>';
+  r1 += '<th class="th-mes-info s3 c-car" rowspan="1"></th>';
+
+  let mesActual = -1, mesCount = 0, mesBuf = '';
+  for (let i = 0; i <= FECHAS.length; i++) {
+    const f = FECHAS[i];
+    if (!f || f.getMonth() !== mesActual) {
+      if (mesActual >= 0) r1 += `<th class="th-mes" colspan="${mesCount}">${MESES[mesActual]}</th>`;
+      if (f) { mesActual = f.getMonth(); mesCount = 1; }
+    } else {
+      mesCount++;
+    }
+  }
+  r1 += '<th class="th-mes-info th-total"></th>';
+  r1 += '</tr>';
+
+  /* ── Encabezado día (row 2) ── */
+  let r2 = '<tr>';
+  r2 += `<th class="th-info s0 c-no">No.</th>`;
+  r2 += `<th class="th-info s1 c-mat">Matrícula</th>`;
+  r2 += `<th class="th-info s2 c-nom">Nombre del Alumno</th>`;
+  r2 += `<th class="th-info s3 c-car">Car.</th>`;
+  for (const f of FECHAS) {
+    const esHoy = isoFecha(f) === HOY_ISO;
+    const cls   = 'th-dia' + (esHoy ? ' hoy' : '');
+    r2 += `<th class="${cls}">${DIAS[f.getDay()]}<br>${String(f.getDate()).padStart(2,'0')}</th>`;
+  }
+  r2 += `<th class="th-total">Total<br>Asist.</th>`;
+  r2 += '</tr>';
+
+  /* ── Filas de alumnos ── */
+  let tbody = '';
+  let totalP = 0, totalT = 0;
+
+  for (const fila of filas) {
+    const { no, matricula, nombre, carrera, dbUser } = fila;
+    let asistencias = 0, tardanzas = 0;
+
+    let celdas = '';
+    for (const f of FECHAS) {
+      const esHoy = isoFecha(f) === HOY_ISO;
+      const key   = dbUser ? `${dbUser.id_usuario}-${isoFecha(f)}` : null;
+      const est   = key ? (lookup[key] || null) : null;
+
+      if (est === 'p') {
+        celdas += `<td class="dc p${esHoy ? ' hoy' : ''}">&#10003;</td>`;
+        asistencias++;
+      } else if (est === 't') {
+        celdas += `<td class="dc t${esHoy ? ' hoy' : ''}">T</td>`;
+        tardanzas++;
+      } else {
+        celdas += `<td class="dc${esHoy ? ' hoy' : ''}"></td>`;
+      }
+    }
+
+    totalP += asistencias;
+    totalT += tardanzas;
+    const totalAlumno = asistencias + tardanzas;
+
+    tbody += `<tr>
+      <td class="s0 c-no">${no}</td>
+      <td class="s1 c-mat">${matricula}</td>
+      <td class="s2 c-nom">${nombre}</td>
+      <td class="s3 c-car">${carrera}</td>
+      ${celdas}
+      <td class="c-total">${dbUser ? totalAlumno : '—'}</td>
+    </tr>`;
+  }
+
+  /* ── Resumen ── */
+  document.getElementById('resumen').innerHTML =
+    `<span>Alumnos: <strong>${ALUMNOS.length}</strong></span>` +
+    `<span>Sesiones del semestre: <strong>${FECHAS.length}</strong></span>` +
+    `<span>&#10003; Asistencias totales (con tarjeta): <strong>${totalP}</strong></span>` +
+    `<span>Tardanzas: <strong>${totalT}</strong></span>`;
+
+  return `<table><thead>${r1}${r2}</thead><tbody>${tbody}</tbody></table>`;
+}
+
+/* ─── Carga principal ─── */
+async function cargar() {
   try {
-    const [usuariosRes, registrosRes] = await Promise.all([
+    const [usuariosRaw, semData] = await Promise.all([
       fetch(API + '/usuarios').then(r => r.json()),
-      fetch(API + '/registros?limit=500').then(r => r.json()),
+      fetch(API + '/asistencia-semestre').then(r => r.json()),
     ]);
 
-    if (usuariosRes.length === 0) {
-      tabla.innerHTML = '<div class="vacio">No hay alumnos registrados.</div>';
-      return;
-    }
+    /* Ordenar usuarios por id_usuario para mapeo posicional */
+    const usuarios = [...usuariosRaw].sort((a, b) => a.id_usuario - b.id_usuario);
 
-    const horasPorMatricula = {};
-    for (const r of registrosRes) {
-      if (!esHoy(r.fecha_hora)) continue;
-      const h = getHoraDe(r.fecha_hora);
-      if (!horasPorMatricula[r.matricula]) horasPorMatricula[r.matricula] = new Set();
-      horasPorMatricula[r.matricula].add(h);
-    }
-
-    const horaActual = new Date().getHours();
-
-    let head = '<thead><tr>'
-      + '<th class="alumno-h">Alumno</th>'
-      + '<th class="matricula-h">Matrícula</th>';
-
-    for (let h = HORA_INICIO; h <= HORA_FIN; h++) {
-      const claseActual = h === horaActual ? ' hora-actual' : '';
-      const etiqueta = String(h).padStart(2, '0') + ':00';
-      head += `<th class="hora-h${claseActual}">${etiqueta}</th>`;
-    }
-    head += '<th>Total</th></tr></thead>';
-
-    const usuariosOrdenados = [...usuariosRes].sort((a, b) =>
-      a.apellido_paterno.localeCompare(b.apellido_paterno, 'es')
-    );
-
-    let body = '<tbody>';
-    for (const u of usuariosOrdenados) {
-      const nombre = `${u.nombre} ${u.apellido_paterno} ${u.apellido_materno || ''}`.trim();
-      const horasMarcadas = horasPorMatricula[u.matricula] || new Set();
-
-      body += `<tr>
-        <td class="alumno">${nombre}</td>
-        <td class="matricula">${u.matricula}</td>`;
-
-      for (let h = HORA_INICIO; h <= HORA_FIN; h++) {
-        const claseActual = h === horaActual ? ' hora-actual' : '';
-        const tieneRegistro = horasMarcadas.has(h);
-        const marca = tieneRegistro
-          ? '<span class="marca">✓</span>'
-          : '<span class="marca no">·</span>';
-        body += `<td class="hora-celda${claseActual}">${marca}</td>`;
+    /* Construir lookup: "id_usuario-YYYY-MM-DD" → 'p' | 't'
+       - Hora 8: aplica regla puntual (≤15 min) / tardanza (>15 min)
+       - Cualquier otra hora: 'p' (modo demo / prueba fuera de horario) */
+    const lookup = {};
+    for (const r of semData) {
+      const key = `${r.id_usuario}-${r.fecha}`;
+      if (!lookup[key]) {
+        if (r.hora === 8) {
+          lookup[key] = r.minuto <= 15 ? 'p' : 't';
+        } else {
+          lookup[key] = 'p';
+        }
       }
-
-      body += `<td class="total">${horasMarcadas.size}</td></tr>`;
     }
-    body += '</tbody>';
 
-    tabla.innerHTML = '<table>' + head + body + '</table>';
+    document.getElementById('tablaContenedor').innerHTML = buildTabla(lookup, usuarios);
 
   } catch (e) {
-    tabla.innerHTML = '<div class="vacio">No se pudo cargar la información.</div>';
+    document.getElementById('tablaContenedor').innerHTML =
+      '<div class="vacio">No se pudo cargar la información. Verifica la conexión con el servidor.</div>';
   }
 }
 
+/* ─── Arranque ─── */
 (async () => {
+  /* Apuntar el botón de descarga al servidor Flask correcto */
+  document.getElementById('linkDescargar').href = API + '/descarga-asistencia';
+
   if (await checkAPI()) {
-    cargar();
-    setInterval(cargar, 3000);
-    setInterval(checkAPI, 10000);
+    await cargar();
+    setInterval(cargar, 10000);
+    setInterval(checkAPI, 20000);
   }
 })();
 </script>
